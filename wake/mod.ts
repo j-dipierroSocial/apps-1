@@ -22,8 +22,8 @@ export interface Props {
    */
   account: string;
   /**
-   * @title Checkout Url
-   * @description https://checkout.erploja2.com.br
+   * @title Wake Storefront URL Secure
+   * @description https://secure.erploja2.com.br
    */
   checkoutUrl: string;
   /**
