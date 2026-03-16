@@ -3,16 +3,19 @@ import { AppContext } from "../mod.ts";
 
 const PATHS_TO_PROXY = [
   ["/checkout", "/checkout"],
+  ["/checkout/complete", "/checkout/complete"],
   ["/Fechamento"],
   ["/Fechamento/*"],
-  ["/Login"],
-  ["/Login/*"],
-  ["/login/*"],
-  ["/Login/Authenticate"],
   ["/Carrinho/*"],
   ["/api/*"],
-  ["/MinhaConta"],
-  ["/MinhaConta/*"],
+  ["/Login/Authenticate", "/Login/Authenticate"],
+  ["/login/authenticate", "/login/authenticate"],
+  ["/login", "/login"],
+  ["/account", "/account"],
+  ["/account/my-data", "/account/my-data"],
+  ["/account/checking_account", "/account/checking_account"],
+  ["/account/addresses", "/account/addresses"],
+  ["/account/subscriptions", "/account/subscriptions"],
 ];
 
 const decoSiteMapUrl = "/sitemap/deco.xml";
@@ -57,7 +60,7 @@ function loader(
     handler: {
       value: {
         __resolveType: "website/handlers/proxy.ts",
-        url: checkoutUrl,
+        url: checkoutUrl + basePath,
         basePath,
         customHeaders: [{
           Host: checkoutUrl,
@@ -65,6 +68,7 @@ function loader(
       },
     },
   }));
+
 
   const [include, routes] = generateDecoSiteMap
     ? [[...(includeSiteMap ?? []), decoSiteMapUrl], [{
