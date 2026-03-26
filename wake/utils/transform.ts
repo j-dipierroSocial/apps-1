@@ -401,9 +401,28 @@ export const toProduct = (
     },
   })) ?? [];
 
-  const isSimilarTo = variant.similarProducts?.map((p) =>
-    toProduct(p!, { base })
-  );
+  const isSimilarTo = variant.similarProducts?.map((similar) => {
+    
+    const sku = similar!.image?.split('-')[0] ?? undefined;
+    const productId = similar!.alias?.split('-').pop() ?? undefined;
+    const name = similar!.name ?? undefined;
+
+    return {
+      "@type": "Product",
+      url: getVariantUrl(similar!, base).href,
+      sku: sku,
+      productID: productId,
+      name: name,
+      inProductGroupWithID: productId,
+      image: [
+        {
+          "@type": "ImageObject",
+          encodingFormat: "image",
+          url: similar!.imageUrl ?? "",
+        }
+      ]
+    }
+  }) ?? [];
 
   const variantSelected = variants.find((v) => {
     return Number(v.productID) === Number(variantId);
@@ -428,7 +447,7 @@ export const toProduct = (
     sku: variant.sku!,
     description:
       variant.informations?.find((info) => info?.type === "Descrição")?.value ??
-        undefined,
+      undefined,
     productID: variant.productVariantId,
     name: variant.variantName ?? undefined,
     inProductGroupWithID: variant.productId,
