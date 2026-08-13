@@ -4,6 +4,7 @@ import { AppContext } from "../mod.ts";
 const PATHS_TO_PROXY = [
   ["/checkout", "/checkout"],
   ["/checkout/complete", "/checkout/complete"],
+  ["/checkout/confirmation", "/checkout/confirmation"],
   ["/Fechamento"],
   ["/Fechamento/*"],
   ["/Carrinho/*"],
