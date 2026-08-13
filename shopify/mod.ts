@@ -59,7 +59,7 @@ export const color = 0x96BF48;
  * @title Shopify
  * @description Manage products, carts, and checkout flows across channels.
  * @category Ecommmerce
- * @logo https://assets.decocache.com/mcp/37122d09-6ceb-4d25-a641-11ce4af8a19b/Shopify.svg
+ * @logo https://decoims.com/mcp/37122d09-6ceb-4d25-a641-11ce4af8a19b/Shopify.svg
  */
 export default function App(props: Props): App<Manifest, State> {
   const { storeName, storefrontAccessToken, adminAccessToken } = props;
@@ -70,7 +70,7 @@ export default function App(props: Props): App<Manifest, State> {
 
   const storefront = createGraphqlClient({
     fetcher: fetchSafe,
-    endpoint: `https://${storeName}.myshopify.com/api/2025-04/graphql.json`,
+    endpoint: `https://${storeName}.myshopify.com/api/2026-04/graphql.json`,
     headers: new Headers({
       "Content-Type": "application/json",
       "X-Shopify-Storefront-Access-Token": storefrontAccessToken,
@@ -80,7 +80,7 @@ export default function App(props: Props): App<Manifest, State> {
   const admin = createGraphqlClient({
     fetcher: fetchSafe,
     endpoint:
-      `https://${storeName}.myshopify.com/admin/api/2025-04/graphql.json`,
+      `https://${storeName}.myshopify.com/admin/api/2026-04/graphql.json`,
     headers: new Headers({
       "Content-Type": "application/json",
       "X-Shopify-Access-Token": stringAdminAccessToken,

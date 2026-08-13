@@ -1,5 +1,6 @@
 import "./utils/unhandledRejection.ts";
 import type { Props as Seo } from "./components/Seo.tsx";
+import type { DefaultQualityOptions } from "./components/Image.tsx";
 import { Routes } from "./flags/audience.ts";
 import { TextReplace } from "./handlers/proxy.ts";
 import manifest, { Manifest } from "./manifest.gen.ts";
@@ -109,13 +110,6 @@ export interface Props {
    */
   caching?: Caching;
   /**
-   * @title Global Async Rendering (Deprecated)
-   * @description Please disable this setting and enable each section individually. More info at https://deco.cx/en/blog/async-render-default
-   * @deprecated true
-   * @default false
-   */
-  firstByteThresholdMS?: boolean;
-  /**
    * @title Avoid redirecting to editor
    * @description Disable going to editor when "." or "Ctrl + Shift + E" is pressed
    */
@@ -142,6 +136,12 @@ export interface Props {
    * @hide true
    */
   sendToClickHouse?: boolean;
+
+  /**
+   * @title Default Image Quality
+   * @description The default quality for images when not explicitly set per component
+   */
+  defaultImageQuality?: DefaultQualityOptions;
 
   /**
    * @title Disable image/asset proxy for this site

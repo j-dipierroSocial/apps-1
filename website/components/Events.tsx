@@ -11,9 +11,8 @@ interface EventsAPI {
   ) => () => void;
 }
 interface FeatureFlags {
-  bypassPlatformImageOptimization: boolean;
-  azionAssets: boolean;
   bypassDecoImageOptimization: boolean;
+  cdnHost: string;
 }
 declare global {
   interface Window {
@@ -31,11 +30,9 @@ declare global {
     };
   }
 }
-const BYPASS_PLATFORM_IMAGE_OPTIMIZATION =
-  Deno.env.get("BYPASS_PLATFORM_IMAGE_OPTIMIZATION") === "true";
-const ENABLE_AZION_ASSETS = Deno.env.get("ENABLE_AZION_ASSETS") !== "false";
 const BYPASS_DECO_IMAGE_OPTIMIZATION =
   Deno.env.get("BYPASS_DECO_IMAGE_OPTIMIZATION") === "true";
+const DECO_CDN_HOST = Deno.env.get("DECO_CDN_HOST") ?? "https://decoims.com";
 /**
  * This function handles all ecommerce analytics events.
  * Add another ecommerce analytics modules here.
@@ -101,9 +98,8 @@ function Events({ deco }: {
           deco,
           segmentCookie: DECO_SEGMENT,
           featureFlags: {
-            bypassPlatformImageOptimization: BYPASS_PLATFORM_IMAGE_OPTIMIZATION,
-            azionAssets: ENABLE_AZION_ASSETS,
             bypassDecoImageOptimization: BYPASS_DECO_IMAGE_OPTIMIZATION,
+            cdnHost: DECO_CDN_HOST,
           },
         })}
       />

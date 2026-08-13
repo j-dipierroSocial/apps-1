@@ -7716,14 +7716,14 @@ export type WeightUnit =
 
 export type ProductVariantFragment = { availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null };
 
-export type CollectionFragment = { description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, image?: { altText?: string | null, url: any } | null };
+export type CollectionFragment = { description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, onlineStoreUrl?: any | null, image?: { altText?: string | null, url: any } | null };
 
 export type ProductFragment = { availableForSale: boolean, createdAt: any, description: string, descriptionHtml: any, handle: string, id: string, isGiftCard: boolean, onlineStoreUrl?: any | null, productType: string, publishedAt: any, requiresSellingPlan: boolean, tags: Array<string>, title: string, totalInventory?: number | null, updatedAt: any, vendor: string, featuredImage?: { altText?: string | null, url: any } | null, images: { nodes: Array<{ altText?: string | null, url: any }> }, media: { nodes: Array<
       | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
       | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
       | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
       | { alt?: string | null, mediaContentType: MediaContentType, sources: Array<{ url: string }>, previewImage?: { altText?: string | null, url: any } | null }
-    > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
+    > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, onlineStoreUrl?: any | null, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
       | { image?: { url: any } | null }
       | Record<PropertyKey, never>
      | null, references?: { edges: Array<{ node:
@@ -7733,7 +7733,7 @@ export type ProductFragment = { availableForSale: boolean, createdAt: any, descr
 
 export type FilterFragment = { id: string, label: string, type: FilterType, values: Array<{ count: number, id: string, input: any, label: string }> };
 
-export type CartFragment = { id: string, checkoutUrl: any, totalQuantity: number, lines: { nodes: Array<
+export type CartFragment = { id: string, checkoutUrl: any, totalQuantity: number, buyerIdentity: { countryCode?: CountryCode | null, email?: string | null }, lines: { nodes: Array<
       | { id: string, quantity: number, merchandise: { id: string, title: string, image?: { url: any, altText?: string | null } | null, product: { title: string, onlineStoreUrl?: any | null, handle: string }, price: { amount: any, currencyCode: CurrencyCode } }, discountAllocations: Array<
           | { code: string, discountedAmount: { amount: any, currencyCode: CurrencyCode } }
           | Record<PropertyKey, never>
@@ -7750,17 +7750,22 @@ export type CartFragment = { id: string, checkoutUrl: any, totalQuantity: number
 
 export type CustomerFragment = { id: string, email?: string | null, firstName?: string | null, lastName?: string | null };
 
-export type CreateCartMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CreateCartMutation = { payload?: { cart?: { id: string } | null } | null };
-
-export type GetCartQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
+export type CreateCartMutationVariables = Exact<{
+  countryCode?: InputMaybe<CountryCode>;
+  languageCode?: InputMaybe<LanguageCode>;
 }>;
 
 
-export type GetCartQuery = { cart?: { id: string, checkoutUrl: any, totalQuantity: number, lines: { nodes: Array<
+export type CreateCartMutation = { payload?: { cart?: { id: string } | null, userErrors: Array<{ field?: Array<string> | null, message: string }> } | null };
+
+export type GetCartQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+  languageCode?: InputMaybe<LanguageCode>;
+  countryCode?: InputMaybe<CountryCode>;
+}>;
+
+
+export type GetCartQuery = { cart?: { id: string, checkoutUrl: any, totalQuantity: number, buyerIdentity: { countryCode?: CountryCode | null, email?: string | null }, lines: { nodes: Array<
         | { id: string, quantity: number, merchandise: { id: string, title: string, image?: { url: any, altText?: string | null } | null, product: { title: string, onlineStoreUrl?: any | null, handle: string }, price: { amount: any, currencyCode: CurrencyCode } }, discountAllocations: Array<
             | { code: string, discountedAmount: { amount: any, currencyCode: CurrencyCode } }
             | Record<PropertyKey, never>
@@ -7778,6 +7783,8 @@ export type GetCartQuery = { cart?: { id: string, checkoutUrl: any, totalQuantit
 export type GetProductQueryVariables = Exact<{
   handle?: InputMaybe<Scalars['String']['input']>;
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
+  languageCode?: InputMaybe<LanguageCode>;
+  countryCode?: InputMaybe<CountryCode>;
 }>;
 
 
@@ -7786,7 +7793,7 @@ export type GetProductQuery = { product?: { availableForSale: boolean, createdAt
         | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
         | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
         | { alt?: string | null, mediaContentType: MediaContentType, sources: Array<{ url: string }>, previewImage?: { altText?: string | null, url: any } | null }
-      > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
+      > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, onlineStoreUrl?: any | null, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
         | { image?: { url: any } | null }
         | Record<PropertyKey, never>
        | null, references?: { edges: Array<{ node:
@@ -7799,6 +7806,8 @@ export type ListProductsQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
   query?: InputMaybe<Scalars['String']['input']>;
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
+  languageCode?: InputMaybe<LanguageCode>;
+  countryCode?: InputMaybe<CountryCode>;
 }>;
 
 
@@ -7807,7 +7816,7 @@ export type ListProductsQuery = { products: { nodes: Array<{ availableForSale: b
           | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
           | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
           | { alt?: string | null, mediaContentType: MediaContentType, sources: Array<{ url: string }>, previewImage?: { altText?: string | null, url: any } | null }
-        > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
+        > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, onlineStoreUrl?: any | null, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
           | { image?: { url: any } | null }
           | Record<PropertyKey, never>
          | null, references?: { edges: Array<{ node:
@@ -7825,6 +7834,8 @@ export type SearchWithFiltersQueryVariables = Exact<{
   sortKey?: InputMaybe<SearchSortKeys>;
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
+  languageCode?: InputMaybe<LanguageCode>;
+  countryCode?: InputMaybe<CountryCode>;
 }>;
 
 
@@ -7834,7 +7845,7 @@ export type SearchWithFiltersQuery = { search: { totalCount: number, pageInfo: {
             | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
             | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
             | { alt?: string | null, mediaContentType: MediaContentType, sources: Array<{ url: string }>, previewImage?: { altText?: string | null, url: any } | null }
-          > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
+          > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, onlineStoreUrl?: any | null, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
             | { image?: { url: any } | null }
             | Record<PropertyKey, never>
            | null, references?: { edges: Array<{ node:
@@ -7854,15 +7865,17 @@ export type AllProductsQueryVariables = Exact<{
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
   filters?: InputMaybe<Array<ProductFilter> | ProductFilter>;
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
+  languageCode?: InputMaybe<LanguageCode>;
+  countryCode?: InputMaybe<CountryCode>;
 }>;
 
 
-export type AllProductsQuery = { collection?: { handle: string, description: string, title: string, products: { pageInfo: { hasNextPage: boolean, hasPreviousPage: boolean, endCursor?: string | null, startCursor?: string | null }, filters: Array<{ id: string, label: string, type: FilterType, values: Array<{ count: number, id: string, input: any, label: string }> }>, nodes: Array<{ availableForSale: boolean, createdAt: any, description: string, descriptionHtml: any, handle: string, id: string, isGiftCard: boolean, onlineStoreUrl?: any | null, productType: string, publishedAt: any, requiresSellingPlan: boolean, tags: Array<string>, title: string, totalInventory?: number | null, updatedAt: any, vendor: string, featuredImage?: { altText?: string | null, url: any } | null, images: { nodes: Array<{ altText?: string | null, url: any }> }, media: { nodes: Array<
+export type AllProductsQuery = { collection?: { id: string, handle: string, description: string, title: string, products: { pageInfo: { hasNextPage: boolean, hasPreviousPage: boolean, endCursor?: string | null, startCursor?: string | null }, filters: Array<{ id: string, label: string, type: FilterType, values: Array<{ count: number, id: string, input: any, label: string }> }>, nodes: Array<{ availableForSale: boolean, createdAt: any, description: string, descriptionHtml: any, handle: string, id: string, isGiftCard: boolean, onlineStoreUrl?: any | null, productType: string, publishedAt: any, requiresSellingPlan: boolean, tags: Array<string>, title: string, totalInventory?: number | null, updatedAt: any, vendor: string, featuredImage?: { altText?: string | null, url: any } | null, images: { nodes: Array<{ altText?: string | null, url: any }> }, media: { nodes: Array<
             | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
             | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
             | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
             | { alt?: string | null, mediaContentType: MediaContentType, sources: Array<{ url: string }>, previewImage?: { altText?: string | null, url: any } | null }
-          > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
+          > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, onlineStoreUrl?: any | null, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
             | { image?: { url: any } | null }
             | Record<PropertyKey, never>
            | null, references?: { edges: Array<{ node:
@@ -7873,6 +7886,8 @@ export type AllProductsQuery = { collection?: { handle: string, description: str
 export type ProductRecommendationsQueryVariables = Exact<{
   productId: Scalars['ID']['input'];
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
+  languageCode?: InputMaybe<LanguageCode>;
+  countryCode?: InputMaybe<CountryCode>;
 }>;
 
 
@@ -7881,7 +7896,7 @@ export type ProductRecommendationsQuery = { productRecommendations?: Array<{ ava
         | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
         | { alt?: string | null, mediaContentType: MediaContentType, previewImage?: { altText?: string | null, url: any } | null }
         | { alt?: string | null, mediaContentType: MediaContentType, sources: Array<{ url: string }>, previewImage?: { altText?: string | null, url: any } | null }
-      > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
+      > }, options: Array<{ name: string, values: Array<string> }>, priceRange: { minVariantPrice: { amount: any, currencyCode: CurrencyCode }, maxVariantPrice: { amount: any, currencyCode: CurrencyCode } }, seo: { title?: string | null, description?: string | null }, variants: { nodes: Array<{ availableForSale: boolean, barcode?: string | null, currentlyNotInStock: boolean, id: string, quantityAvailable?: number | null, requiresShipping: boolean, sku?: string | null, title: string, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { amount: any, currencyCode: CurrencyCode } | null, image?: { altText?: string | null, url: any } | null, price: { amount: any, currencyCode: CurrencyCode }, selectedOptions: Array<{ name: string, value: string }>, unitPrice?: { amount: any, currencyCode: CurrencyCode } | null, unitPriceMeasurement?: { measuredType?: UnitPriceMeasurementMeasuredType | null, quantityValue: number, referenceUnit?: UnitPriceMeasurementMeasuredUnit | null, quantityUnit?: UnitPriceMeasurementMeasuredUnit | null } | null }> }, collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, onlineStoreUrl?: any | null, image?: { altText?: string | null, url: any } | null }> }, metafields: Array<{ description?: string | null, key: string, namespace: string, type: string, value: string, reference?:
         | { image?: { url: any } | null }
         | Record<PropertyKey, never>
        | null, references?: { edges: Array<{ node:
@@ -7891,6 +7906,8 @@ export type ProductRecommendationsQuery = { productRecommendations?: Array<{ ava
 
 export type GetShopInfoQueryVariables = Exact<{
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
+  languageCode?: InputMaybe<LanguageCode>;
+  countryCode?: InputMaybe<CountryCode>;
 }>;
 
 
@@ -7915,7 +7932,7 @@ export type AddItemToCartMutationVariables = Exact<{
 }>;
 
 
-export type AddItemToCartMutation = { payload?: { cart?: { id: string, checkoutUrl: any, totalQuantity: number, lines: { nodes: Array<
+export type AddItemToCartMutation = { payload?: { cart?: { id: string, checkoutUrl: any, totalQuantity: number, buyerIdentity: { countryCode?: CountryCode | null, email?: string | null }, lines: { nodes: Array<
           | { id: string, quantity: number, merchandise: { id: string, title: string, image?: { url: any, altText?: string | null } | null, product: { title: string, onlineStoreUrl?: any | null, handle: string }, price: { amount: any, currencyCode: CurrencyCode } }, discountAllocations: Array<
               | { code: string, discountedAmount: { amount: any, currencyCode: CurrencyCode } }
               | Record<PropertyKey, never>
@@ -7947,7 +7964,7 @@ export type AddCouponMutationVariables = Exact<{
 }>;
 
 
-export type AddCouponMutation = { payload?: { cart?: { id: string, checkoutUrl: any, totalQuantity: number, lines: { nodes: Array<
+export type AddCouponMutation = { payload?: { cart?: { id: string, checkoutUrl: any, totalQuantity: number, buyerIdentity: { countryCode?: CountryCode | null, email?: string | null }, lines: { nodes: Array<
           | { id: string, quantity: number, merchandise: { id: string, title: string, image?: { url: any, altText?: string | null } | null, product: { title: string, onlineStoreUrl?: any | null, handle: string }, price: { amount: any, currencyCode: CurrencyCode } }, discountAllocations: Array<
               | { code: string, discountedAmount: { amount: any, currencyCode: CurrencyCode } }
               | Record<PropertyKey, never>
@@ -7968,7 +7985,7 @@ export type UpdateItemsMutationVariables = Exact<{
 }>;
 
 
-export type UpdateItemsMutation = { payload?: { cart?: { id: string, checkoutUrl: any, totalQuantity: number, lines: { nodes: Array<
+export type UpdateItemsMutation = { payload?: { cart?: { id: string, checkoutUrl: any, totalQuantity: number, buyerIdentity: { countryCode?: CountryCode | null, email?: string | null }, lines: { nodes: Array<
           | { id: string, quantity: number, merchandise: { id: string, title: string, image?: { url: any, altText?: string | null } | null, product: { title: string, onlineStoreUrl?: any | null, handle: string }, price: { amount: any, currencyCode: CurrencyCode } }, discountAllocations: Array<
               | { code: string, discountedAmount: { amount: any, currencyCode: CurrencyCode } }
               | Record<PropertyKey, never>
@@ -7983,6 +8000,27 @@ export type UpdateItemsMutation = { payload?: { cart?: { id: string, checkoutUrl
         | { discountedAmount: { amount: any, currencyCode: CurrencyCode } }
       > } | null } | null };
 
+export type CartBuyerIdentityUpdateMutationVariables = Exact<{
+  cartId: Scalars['ID']['input'];
+  buyerIdentity: CartBuyerIdentityInput;
+}>;
+
+
+export type CartBuyerIdentityUpdateMutation = { cartBuyerIdentityUpdate?: { cart?: { id: string, checkoutUrl: any, totalQuantity: number, buyerIdentity: { countryCode?: CountryCode | null, email?: string | null }, lines: { nodes: Array<
+          | { id: string, quantity: number, merchandise: { id: string, title: string, image?: { url: any, altText?: string | null } | null, product: { title: string, onlineStoreUrl?: any | null, handle: string }, price: { amount: any, currencyCode: CurrencyCode } }, discountAllocations: Array<
+              | { code: string, discountedAmount: { amount: any, currencyCode: CurrencyCode } }
+              | Record<PropertyKey, never>
+            >, cost: { totalAmount: { amount: any, currencyCode: CurrencyCode }, subtotalAmount: { amount: any, currencyCode: CurrencyCode }, amountPerQuantity: { amount: any, currencyCode: CurrencyCode }, compareAtAmountPerQuantity?: { amount: any, currencyCode: CurrencyCode } | null } }
+          | { id: string, quantity: number, merchandise: { id: string, title: string, image?: { url: any, altText?: string | null } | null, product: { title: string, onlineStoreUrl?: any | null, handle: string }, price: { amount: any, currencyCode: CurrencyCode } }, discountAllocations: Array<
+              | { code: string, discountedAmount: { amount: any, currencyCode: CurrencyCode } }
+              | Record<PropertyKey, never>
+            >, cost: { totalAmount: { amount: any, currencyCode: CurrencyCode }, subtotalAmount: { amount: any, currencyCode: CurrencyCode }, amountPerQuantity: { amount: any, currencyCode: CurrencyCode }, compareAtAmountPerQuantity?: { amount: any, currencyCode: CurrencyCode } | null } }
+        > }, cost: { totalTaxAmount?: { amount: any, currencyCode: CurrencyCode } | null, subtotalAmount: { amount: any, currencyCode: CurrencyCode }, totalAmount: { amount: any, currencyCode: CurrencyCode }, checkoutChargeAmount: { amount: any, currencyCode: CurrencyCode } }, discountCodes: Array<{ code: string, applicable: boolean }>, discountAllocations: Array<
+        | { discountedAmount: { amount: any, currencyCode: CurrencyCode } }
+        | { discountedAmount: { amount: any, currencyCode: CurrencyCode } }
+        | { discountedAmount: { amount: any, currencyCode: CurrencyCode } }
+      > } | null, userErrors: Array<{ field?: Array<string> | null, message: string }> } | null };
+
 export type SignInWithEmailAndPasswordMutationVariables = Exact<{
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -7990,3 +8028,16 @@ export type SignInWithEmailAndPasswordMutationVariables = Exact<{
 
 
 export type SignInWithEmailAndPasswordMutation = { customerAccessTokenCreate?: { customerAccessToken?: { accessToken: string, expiresAt: any } | null, customerUserErrors: Array<{ code?: CustomerErrorCode | null, message: string }> } | null };
+
+export type ListAllCategoriesQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  reverse?: InputMaybe<Scalars['Boolean']['input']>;
+  sortKey?: InputMaybe<CollectionSortKeys>;
+}>;
+
+
+export type ListAllCategoriesQuery = { collections: { nodes: Array<{ description: string, descriptionHtml: any, handle: string, id: string, title: string, updatedAt: any, onlineStoreUrl?: any | null, image?: { altText?: string | null, url: any } | null }>, pageInfo: { hasNextPage: boolean, hasPreviousPage: boolean, endCursor?: string | null, startCursor?: string | null } } };

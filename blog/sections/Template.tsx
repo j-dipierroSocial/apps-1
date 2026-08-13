@@ -1,12 +1,17 @@
 import { BlogPost } from "../types.ts";
 import { CSS } from "../static/css.ts";
 import { renderSection } from "../../website/pages/Page.tsx";
+import { AppContext } from "../mod.ts";
 
 export interface Props {
   post: BlogPost | null;
 }
 
-export default function Template({ post }: Props) {
+const iframeStyle = "width:100%;height:100%;border:none;height:100vh;";
+
+export default function Template(
+  { post, pageSlug, categorySlug }: ReturnType<typeof loader>,
+) {
   if (!post) return null;
 
   const {
@@ -17,7 +22,35 @@ export default function Template({ post }: Props) {
     image,
     alt,
     sections,
+    slug,
+    categories,
   } = post;
+
+  const postCategorySlug = categories?.[0]?.slug ?? "";
+
+  if (pageSlug) {
+    const resolvedUrl = pageSlug
+      .replace(":category", postCategorySlug)
+      .replace(":slug", slug);
+
+    return (
+      <iframe
+        src={resolvedUrl}
+        style={iframeStyle}
+      />
+    );
+  }
+
+  if (categorySlug) {
+    const resolvedUrl = categorySlug.replace(":category", postCategorySlug);
+
+    return (
+      <iframe
+        src={resolvedUrl}
+        style={iframeStyle}
+      />
+    );
+  }
 
   return (
     <>
@@ -28,7 +61,7 @@ export default function Template({ post }: Props) {
         <p class="text-xl">{excerpt}</p>
         <p>
           {date
-            ? new Date(date).toLocaleDateString("en-US", {
+            ? new Date(`${date}T00:00:00`).toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
               year: "numeric",
@@ -50,3 +83,11 @@ export default function Template({ post }: Props) {
     </>
   );
 }
+
+export const loader = (props: Props, _req: Request, ctx: AppContext) => {
+  return {
+    ...props,
+    pageSlug: ctx.pageSlug,
+    categorySlug: ctx.categorySlug,
+  };
+};

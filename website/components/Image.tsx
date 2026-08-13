@@ -1,11 +1,29 @@
 import { Head, IS_BROWSER } from "$fresh/runtime.ts";
 import type { JSX } from "preact";
+import { createContext } from "preact";
 import { forwardRef } from "preact/compat";
-import { Manifest } from "../manifest.gen.ts";
+import { useContext } from "preact/hooks";
 
-export const PATH: `/live/invoke/${keyof Manifest["loaders"]}` =
-  "/live/invoke/website/loaders/image.ts";
-const ASSET_URLS_TO_REPLACE = [
+const DEFAULT_CDN_HOST = "https://decoims.com";
+
+// CDN host can be overridden via DECO_CDN_HOST env var (server) or
+// window.DECO.featureFlags.cdnHost (browser, injected by Events.tsx).
+const getCdnHost = (): string => {
+  if (IS_BROWSER) {
+    // deno-lint-ignore no-explicit-any
+    return (globalThis as any).DECO?.featureFlags?.cdnHost ?? DEFAULT_CDN_HOST;
+  }
+  return Deno.env.get("DECO_CDN_HOST") ?? DEFAULT_CDN_HOST;
+};
+
+// Strip these prefixes before passing the remainder to the CDN's `?src=` so
+// the worker hits GCS directly instead of doing an absolute-URL hop. The
+// configured CDN host is included so a non-default DECO_CDN_HOST still
+// strips correctly; the GCS deco-assets bucket is kept unconditionally as a
+// well-known origin.
+const getAssetUrlPrefixesToStrip = (): readonly string[] => [
+  `${getCdnHost()}/`,
+  "https://storage.googleapis.com/deco-assets/",
   "https://assets.decocache.com/",
   "https://deco-sites-assets.s3.sa-east-1.amazonaws.com/",
   "https://data.decoassets.com/",
@@ -38,24 +56,6 @@ export const FACTORS = [1, 2];
 
 type FitOptions = "contain" | "cover";
 
-// By default we use the platform image optimization, with functions like:
-// optimizeVTEX, optimizeWake, optmizeShopify
-// if you want to use deco optimization
-// you can set the BYPASS_PLATFORM_IMAGE_OPTIMIZATION environment variable to true
-// Default is false
-const bypassPlatformImageOptimization = () =>
-  IS_BROWSER
-    // deno-lint-ignore no-explicit-any
-    ? (globalThis as any).DECO?.featureFlags?.bypassPlatformImageOptimization
-    : Deno.env.get("BYPASS_PLATFORM_IMAGE_OPTIMIZATION") === "true";
-
-// Default is true
-const isAzionAssetsEnabled = () =>
-  IS_BROWSER
-    // deno-lint-ignore no-explicit-any
-    ? (globalThis as any).DECO?.featureFlags?.azionAssets
-    : Deno.env.get("ENABLE_AZION_ASSETS") !== "false";
-
 // Default is false
 const bypassDecoImageOptimization = () =>
   IS_BROWSER
@@ -63,7 +63,18 @@ const bypassDecoImageOptimization = () =>
     ? (globalThis as any).DECO?.featureFlags?.bypassDecoImageOptimization
     : Deno.env.get("BYPASS_DECO_IMAGE_OPTIMIZATION") === "true";
 
+/** Quality options available per component (includes "original" = 100%). */
 export type QualityOptions = "low" | "medium" | "high" | "original"; // 60% - 70% - 80% - 100%
+
+/** Quality options for the site-wide default in mod.ts — "original" is excluded
+ *  because a global 100% quality default would hurt performance. */
+export type DefaultQualityOptions = "low" | "medium" | "high";
+
+/** Provides the site-wide default quality to Image/Picture components.
+ *  Typed as QualityOptions because components may override with "original". */
+export const DefaultImageQualityContext = createContext<
+  QualityOptions | undefined
+>(undefined);
 
 interface OptimizationOptions {
   originalSrc: string;
@@ -174,34 +185,32 @@ export const getOptimizedMediaUrl = (opts: OptimizationOptions) => {
   if (originalSrc.startsWith("data:")) {
     return originalSrc;
   }
-  if (!bypassPlatformImageOptimization()) {
-    if (originalSrc.startsWith("https://media-storage.soureicdn.com")) {
-      return optimizeSourei(opts);
-    }
+  if (originalSrc.startsWith("https://media-storage.soureicdn.com")) {
+    return optimizeSourei(opts);
+  }
 
-    if (originalSrc.includes("media/catalog/product")) {
-      return optimizeMagento(opts);
-    }
+  if (originalSrc.includes("media/catalog/product")) {
+    return optimizeMagento(opts);
+  }
 
-    if (originalSrc.includes("fbitsstatic.net/img/")) {
-      return optimizeWake(opts);
-    }
+  if (originalSrc.includes("fbitsstatic.net/img/")) {
+    return optimizeWake(opts);
+  }
 
-    if (originalSrc.startsWith("https://cdn.vnda.")) {
-      return optmizeVNDA(opts);
-    }
+  if (originalSrc.startsWith("https://cdn.vnda.")) {
+    return optmizeVNDA(opts);
+  }
 
-    if (originalSrc.startsWith("https://cdn.shopify.com")) {
-      return optmizeShopify(opts);
-    }
+  if (originalSrc.startsWith("https://cdn.shopify.com")) {
+    return optmizeShopify(opts);
+  }
 
-    if (
-      /(vteximg.com.br|vtexassets.com|myvtex.com)\/arquivos\/ids\/\d+/.test(
-        originalSrc,
-      )
-    ) {
-      return optimizeVTEX(opts);
-    }
+  if (
+    /(vteximg.com.br|vtexassets.com|myvtex.com)\/arquivos\/ids\/\d+/.test(
+      originalSrc,
+    )
+  ) {
+    return optimizeVTEX(opts);
   }
 
   if (bypassDecoImageOptimization()) {
@@ -213,23 +222,22 @@ export const getOptimizedMediaUrl = (opts: OptimizationOptions) => {
   params.set("fit", fit);
   params.set("width", `${width}`);
   height && params.set("height", `${height}`);
+  const srcQuality = quality ||
+    new URL(originalSrc, "https://a.com").searchParams.get("quality");
+  srcQuality && params.set("quality", srcQuality);
 
-  if (isAzionAssetsEnabled()) {
-    // only accepted for Azion for now
-    quality && params.set("quality", quality);
+  // Strip known CDN prefixes so the worker can hit GCS directly instead of
+  // doing an absolute-URL hop. Anything left (path + any query string —
+  // signed URLs, cache busters, etc.) is preserved verbatim through
+  // URLSearchParams encoding and recovered on the worker via
+  // searchParams.get("src").
+  const src = getAssetUrlPrefixesToStrip().reduce(
+    (acc, url) => acc.replace(url, ""),
+    opts.originalSrc,
+  );
+  params.set("src", src);
 
-    const originalSrc = ASSET_URLS_TO_REPLACE.reduce(
-      (acc, url) => acc.replace(url, ""),
-      opts.originalSrc,
-    );
-    const imageSource = originalSrc.split("?")[0];
-    // src is being passed separately to avoid URL encoding issues
-    return `https://deco-assets.edgedeco.com/image?${params}&src=${imageSource}`;
-  }
-
-  params.set("src", originalSrc);
-
-  return `${PATH}?${params}`;
+  return `${getCdnHost()}/image?${params}`;
 };
 
 export const getSrcSet = (
@@ -296,6 +304,8 @@ export const getEarlyHintFromSrcProps = (srcProps: {
 
 const Image = forwardRef<HTMLImageElement, Props>((props, ref) => {
   const { preload, loading = "lazy" } = props;
+  const defaultQuality = useContext(DefaultImageQualityContext);
+  const quality = props.quality ?? defaultQuality;
 
   const shouldSetEarlyHint = !!props.setEarlyHint && preload;
   const srcSet = props.srcSet ??
@@ -305,7 +315,7 @@ const Image = forwardRef<HTMLImageElement, Props>((props, ref) => {
       props.height,
       props.fit,
       shouldSetEarlyHint ? FACTORS.slice(-1) : FACTORS,
-      props.quality,
+      quality,
     );
 
   const linkProps = srcSet &&
@@ -331,7 +341,7 @@ const Image = forwardRef<HTMLImageElement, Props>((props, ref) => {
         height: props.height,
         fetchpriority: props.fetchPriority,
         src: props.src,
-        quality: props.quality,
+        quality,
       }),
     );
   }
